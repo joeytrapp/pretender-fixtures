@@ -1,0 +1,23 @@
+{
+  "name": "pretender-fixtures",
+  "version": "1.0.0",
+  "description": "Client side lib for generating fixtures that will be returned by a Pretender server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joeytrapp/pretender-fixtures.git"
+  },
+  "author": "Joey Trapp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joeytrapp/pretender-fixtures/issues"
+  },
+  "homepage": "https://github.com/joeytrapp/pretender-fixtures",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0"
+  }
+}
