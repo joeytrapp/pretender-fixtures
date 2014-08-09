@@ -1240,11 +1240,11 @@ if (isNode) {
  * Pretender server running in the client.
  */
 Agent = function(defaults) {
-  this._fixtures = {};
-  this._fixtureIds = {};
-  this._groups = [];
-  this._server = null;
+  this.fixtures = {};
+  this.fixtureIds = {};
+  this.groups = [];
   this.useUUID = true;
+  this._server = null;
   if (typeof defaults === 'object') {
     Object.keys(defaults).forEach(function(key) {
       this[key] = defaults[key];
@@ -1284,10 +1284,10 @@ Agent.prototype.server = function(cb) {
 Agent.prototype.makeIds = function(key, length) {
   var i, obj = {}, id;
   key = Agent.nk(key);
-  if (this._fixtureIds[key] === undefined) {
-    this._fixtureIds[key] = obj;
+  if (this.fixtureIds[key] === undefined) {
+    this.fixtureIds[key] = obj;
   } else {
-    obj = this._fixtureIds[key];
+    obj = this.fixtureIds[key];
   }
   for (i = 0; i < length; i++) {
     id = i + 1;
@@ -1300,7 +1300,7 @@ Agent.prototype.makeIds = function(key, length) {
 };
 
 Agent.prototype.getIds = function(key) {
-  return this._fixtureIds[Agent.nk(key)] || {};
+  return this.fixtureIds[Agent.nk(key)] || {};
 };
 
 Agent.prototype.group = function(key, callback) {
@@ -1309,14 +1309,35 @@ Agent.prototype.group = function(key, callback) {
 };
 
 Agent.prototype.fixtures = function(key) {
-  return this._fixtures[Agent.nk(key)] || {};
+  return this.fixtures[Agent.nk(key)] || {};
 };
 
 Agent.prototype.build = function() {
-  this._groups.forEach(function(group) {
-    this._fixtures[Agent.nk(group.key)] = group.records();
+  this.groups.forEach(function(group) {
+    this.fixtures[Agent.nk(group.key)] = group.records();
   }.bind(this));
   return this;
+};
+
+Agent.prototype.rebuild = function() {
+  this.fixtures = {};
+  this.build();
+};
+
+Agent.prototype.addRecord = function(data) {
+
+};
+
+Agent.prototype.updateRecord = function(data) {
+
+};
+
+Agent.prototype.replaceRecord = function(data) {
+
+};
+
+Agent.prototype.deleteRecord = function(data) {
+
 };
 
 /**
@@ -1330,31 +1351,37 @@ Agent.prototype.build = function() {
  */
 Agent.FixtureGroup = function(key, callback) {
   this.key = Agent.nk(key);
-  this._callback = callback;
-  this._isBuilt = false;
-  this._fixtures = [];
+  this.callback = callback;
+  this.isBuilt = false;
+  this.fixtures = [];
 };
 
 Agent.FixtureGroup.prototype.fixture = function(id, data) {
-  this._fixtures.push(new Agent.Fixture(id, data));
 };
 
 Agent.FixtureGroup.prototype.build = function() {
+  var self = this, obj = {
+    fixture: function(id, data) {
+      self.fixtures.push(new Agent.Fixture(id, data));
+    }
+  };
   if (typeof this.callback === 'function') {
-    this._callback.call(this, this);
+    this.callback.call(obj, this);
   }
+  this.isBuilt = true;
 };
 
 Agent.FixtureGroup.prototype.records = function() {
-  if (!this._isBuilt) { this.build(); }
-  return this._fixtures.reduce(function(accum, fixture) {
+  if (!this.isBuilt) { this.build(); }
+  return this.fixtures.reduce(function(accum, fixture) {
     accum[fixture.id] = fixture.record();
+    return accum;
   }, {});
 };
 
 Agent.FixtureGroup.prototype.reset = function() {
-  this._isBuilt = false;
-  this._fixtures = [];
+  this.isBuilt = false;
+  this.fixtures = [];
 };
 
 /**
@@ -1364,9 +1391,9 @@ Agent.FixtureGroup.prototype.reset = function() {
  * the final object that represents the fixture, the id
  * is injected in if the data does not include the id key
  */
-Agent.Fixture = function(id, record) {
+Agent.Fixture = function(id, data) {
   this.id = id;
-  this.record = record;
+  this.data = data;
 };
 
 Agent.Fixture.prototype.record = function() {
