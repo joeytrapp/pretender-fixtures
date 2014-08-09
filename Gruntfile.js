@@ -10,8 +10,51 @@ module.exports = function(grunt) {
         ],
         dest: 'dist/agent.js'
       }
+    },
+
+    connect: {
+      server: {
+        options: {
+          port: 3000
+        }
+      }
+    },
+
+    jshint: {
+      options: {},
+      all: ['lib/agent.js']
+    },
+
+    qunit: {
+      all: {
+        options: {
+          urls: ['http://localhost:3000/test/index.html']
+        }
+      }
+    },
+
+    watch: {
+      test: {
+        files: ['test/**/*.js', 'lib/**/*.js'],
+        tasks: ['build', 'jshint:all', 'qunit:all']
+      },
+      lint: {
+        files: ['test/**/*.js', 'lib/**/*.js'],
+        tasks: ['build', 'jshint:all']
+      }
     }
   });
+
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.registerTask('default', ['concat:build']);
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
+  grunt.registerTask('build', ['concat:build']);
+  grunt.registerTask('test', ['build', 'connect:server', 'jshint:all', 'qunit:all']);
+  grunt.registerTask('autotest', ['build', 'connect:server', 'jshint:all', 'qunit:all', 'watch:test']);
+  grunt.registerTask('server', ['build', 'connect:server', 'watch:lint']);
+  grunt.registerTask('default', ['test']);
 };
+
