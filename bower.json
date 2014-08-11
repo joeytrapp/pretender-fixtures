@@ -1,18 +1,21 @@
 {
   "name": "pretender-fixtures",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/joeytrapp/pretender-fixtures",
   "authors": [
     "Joey Trapp <joey@loadsys.com>"
   ],
   "description": "Client side lib for generating fixtures that will be returned by a Pretender server",
   "license": "MIT",
-  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "pretender": "~0.1.0",
+    "query-string": "~0.4.1"
+  }
 }
