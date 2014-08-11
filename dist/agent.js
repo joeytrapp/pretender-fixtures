@@ -1323,14 +1323,16 @@ Agent.prototype.group = function(key, callback) {
 };
 
 Agent.prototype.build = function() {
-  this.groups.forEach(function(group) {
-    var key = Agent.nk(group.key), records = group.records(), i;
-    for (i in records) {
-      if (records.hasOwnProperty(i)) {
-        this.store.createRecord(key, i, records[i]);
+  var i, j, len, key, records;
+  for (i = 0, len = this.groups.length; i < len; i++) {
+    key = Agent.nk(this.groups[i].key);
+    records = this.groups[i].records();
+    for (j in records) {
+      if (records.hasOwnProperty(j)) {
+        this.store.createRecord(key, j, records[j]);
       }
     }
-  }.bind(this));
+  }
   return this;
 };
 
