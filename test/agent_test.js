@@ -50,7 +50,7 @@
     });
     agent.build();
     agent.reset();
-    equal(Object.keys(agent.fixtures('test')).length, 0, 'The fixtures were not removed');
+    equal(agent.fixtures('test'), false, 'The fixtures were not removed');
   });
 
   test('rebuild removes all fixtures and rebuilds them from group callbacks', function() {
