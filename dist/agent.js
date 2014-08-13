@@ -3396,7 +3396,11 @@ Agent.Router.prototype._toArray = function(obj) {
 };
 
 Agent.Router.prototype.get = function(route, key) {
-  var server = this.agent.server(), router = this, segment = false, bits;
+  var agent = this.agent,
+      server = agent.server(),
+      router = this,
+      segment = false,
+      bits;
   bits = this._parseKey(key, route);
   key = bits[0];
   segment = bits[1];
@@ -3429,7 +3433,11 @@ Agent.Router.prototype.get = function(route, key) {
 };
 
 Agent.Router.prototype.post = function(route, key) {
-  var server = this.agent.server(), router = this, segment = false, bits;
+  var agent = this.agent,
+      server = agent.server(),
+      router = this,
+      segment = false,
+      bits;
   bits = this._parseKey(key, route);
   key = bits[0];
   segment = bits[1];
@@ -3463,7 +3471,11 @@ Agent.Router.prototype.post = function(route, key) {
 };
 
 Agent.Router.prototype.put = function(route, key) {
-  var server = this.agent.server(), router = this, segment = false, bits;
+  var agent = this.agent,
+      server = agent.server(),
+      router = this,
+      segment = false,
+      bits;
   bits = this._parseKey(key, route);
   key = bits[0];
   segment = bits[1];
@@ -3494,7 +3506,11 @@ Agent.Router.prototype.put = function(route, key) {
 };
 
 Agent.Router.prototype['delete'] = function(route, key) {
-  var server = this.agent.server(), router = this, segment = false, bits;
+  var agent = this.agent,
+      server = agent.server(),
+      router = this,
+      segment = false,
+      bits;
   bits = this._parseKey(key, route);
   key = bits[0];
   segment = bits[1];
