@@ -3048,7 +3048,8 @@ Agent.prototype.server = function(cb) {
   var agent = this;
   if (!this._server) {
     if (typeof cb === 'function') {
-      this._server = new Pretender(function() {
+      new Pretender(function() {
+        agent._server = this;
         cb.call(this, agent);
       });
     } else {
