@@ -3399,10 +3399,10 @@ Agent.Router.prototype._toArray = function(obj) {
 Agent.Router.prototype._parseParams = function(params) {
   var ret = false;
   try {
-    ret = qs.parse(request.requestBody);
+    ret = JSON.parse(params);
   } catch(e) {
     try {
-      ret = JSON.parse(request.requestBody);
+      ret = qs.parse(params);
     } catch(e) {
       ret = false;
     }
