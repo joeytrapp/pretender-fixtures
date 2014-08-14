@@ -3467,7 +3467,7 @@ Agent.Router.prototype.post = function(route, key) {
     if (segment) {
       id = request.params[segment];
     }
-    params = this._parseParams(request.requestBody);
+    params = router._parseParams(request.requestBody);
     if (!params || !params[key]) {
       code = 400;
     }
@@ -3506,7 +3506,7 @@ Agent.Router.prototype.put = function(route, key) {
     if (segment) {
       id = request.params[segment];
     }
-    params = this._parseParams(request.requestBody);
+    params = router._parseParams(request.requestBody);
     if (!params || !params[key]) {
       code = 400;
     }
