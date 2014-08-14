@@ -3489,7 +3489,7 @@ Agent.Router.prototype.post = function(route, options) {
       id = request.params[segment];
     }
     params = router._parseParams(request.requestBody);
-    if (!params || !params[singular] || !params[plural]) {
+    if (!params || (!params[singular] || !params[plural])) {
       code = 400;
     }
     params = params[singular];
@@ -3539,7 +3539,7 @@ Agent.Router.prototype.put = function(route, options) {
       id = request.params[segment];
     }
     params = router._parseParams(request.requestBody);
-    if (!params || !params[singular] || !params[plural]) {
+    if (!params || (!params[singular] || !params[plural])) {
       code = 400;
     }
     params = params[singular];
