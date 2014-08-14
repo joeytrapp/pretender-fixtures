@@ -3396,6 +3396,20 @@ Agent.Router.prototype._toArray = function(obj) {
   return arr;
 };
 
+Agent.Router.prototype._parseParams = function(params) {
+  var ret = false;
+  try {
+    ret = qs.parse(request.requestBody);
+  } catch(e) {
+    try {
+      ret = JSON.parse(request.requestBody);
+    } catch(e) {
+      ret = false;
+    }
+  }
+  return ret;
+};
+
 Agent.Router.prototype.get = function(route, key) {
   var agent = this.agent,
       server = agent.server(),
@@ -3453,10 +3467,11 @@ Agent.Router.prototype.post = function(route, key) {
     if (segment) {
       id = request.params[segment];
     }
-    params = qs.parse(request.requestBody)[key];
-    if (!params) {
+    params = this._parseParams(request.requestBody);
+    if (!params || !params[key]) {
       code = 400;
     }
+    params = params[key];
     if (data && id) {
       if (agent.getRecord(key, id)) {
         body[key] = agent.updateRecord(key, id, params);
@@ -3491,10 +3506,11 @@ Agent.Router.prototype.put = function(route, key) {
     if (segment) {
       id = request.params[segment];
     }
-    params = qs.parse(request.requestBody)[key];
-    if (!id || !params) {
+    params = this._parseParams(request.requestBody);
+    if (!params || !params[key]) {
       code = 400;
     }
+    params = params[key];
     data = agent.getRecord(key, id);
     if (!data) {
       code = 404;
