@@ -3437,6 +3437,7 @@ Agent.Router.prototype.get = function(route, options) {
       agent.log('request: GET ' + request.url + '  response: ' + response[0]);
       return response;
     });
+    return;
   }
 
   options = options || {};
@@ -3495,6 +3496,7 @@ Agent.Router.prototype.post = function(route, options) {
       agent.log('request: POST ' + request.url + '  response: ' + response[0]);
       return response;
     });
+    return;
   }
 
   options = options || {};
@@ -3563,6 +3565,7 @@ Agent.Router.prototype.put = function(route, options) {
       agent.log('request: PUT ' + request.url + '  response: ' + response[0]);
       return response;
     });
+    return;
   }
 
   options = options || {};
@@ -3626,6 +3629,7 @@ Agent.Router.prototype['delete'] = function(route, key) {
       agent.log('request: DELETE ' + request.url + '  response: ' + response[0]);
       return response;
     });
+    return;
   }
 
   bits = this._parseKey(key, route);
