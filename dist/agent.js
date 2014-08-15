@@ -3004,6 +3004,7 @@ Agent = function(defaults) {
   this.useUUID = true;
   this.router = new Agent.Router(this);
   this._server = null;
+  this.logger = console;
   if (d.store) {
     if (typeof d.store === 'function') {
       this.store = new d.store();
@@ -3108,6 +3109,10 @@ Agent.prototype.reset = function() {
 Agent.prototype.rebuild = function() {
   this.reset();
   this.build();
+};
+
+Agent.prototype.log = function() {
+  this.logger.log.apply(this.logger, arguments);
 };
 
 Agent.prototype.fixtures = Agent.prototype.get = function(key) {
@@ -3408,19 +3413,31 @@ Agent.Router.prototype._parseParams = function(params) {
   } catch(e) {
     try {
       ret = qs.parse(params);
-    } catch(e) {
+    } catch(er) {
       ret = false;
     }
   }
   return ret;
 };
 
+/**
+ * router.get
+ *
+ */
 Agent.Router.prototype.get = function(route, options) {
   var agent = this.agent,
       server = agent.server(),
       router = this,
       segment = false,
       plural, singular, bits;
+
+  if (typeof options === 'function') {
+    server.get(route, function(request) {
+      var response = options.call(this, request);
+      agent.log('request: GET ' + request.url + '  response: ' + response[0]);
+      return response;
+    });
+  }
 
   options = options || {};
   plural = options.plural;
@@ -3450,22 +3467,35 @@ Agent.Router.prototype.get = function(route, options) {
         if (!data) {
           code = 404;
         } else {
-          body[singular] = [data];
+          body[singular] = data;
         }
       } else {
         body[plural] = router._toArray(data);
       }
     }
+    agent.log('request: GET ' + request.url + '  response: ' + code);
     return [code, headers, JSON.stringify(body)];
   });
 };
 
+/**
+ * router.post
+ *
+ */
 Agent.Router.prototype.post = function(route, options) {
   var agent = this.agent,
       server = agent.server(),
       router = this,
       segment = false,
       plural, singular, bits;
+
+  if (typeof options === 'function') {
+    server.post(route, function(request) {
+      var response = options.call(this, request);
+      agent.log('request: POST ' + request.url + '  response: ' + response[0]);
+      return response;
+    });
+  }
 
   options = options || {};
   plural = options.plural;
@@ -3484,7 +3514,8 @@ Agent.Router.prototype.post = function(route, options) {
         body = {},
         data = agent.get(plural),
         id = false,
-        params = {};
+        params = {},
+        responseKey;
     if (segment) {
       id = request.params[segment];
     }
@@ -3495,27 +3526,44 @@ Agent.Router.prototype.post = function(route, options) {
     params = params[singular];
     if (!params) {
       params = params[plural];
+      responseKey = plural;
+    } else {
+      responseKey = singular;
     }
     if (data && id) {
       if (agent.getRecord(plural, id)) {
-        body[singular] = agent.updateRecord(plural, id, params);
+        body[responseKey] = agent.updateRecord(plural, id, params);
+        code = 201;
       } else {
         code = 404;
       }
     } else {
-      body[singular] = agent.createRecord(plural, params);
+      body[responseKey] = agent.createRecord(plural, params);
       code = 201;
     }
+    agent.log('request: POST ' + request.url + '  response: ' + code);
     return [code, headers, JSON.stringify(body)];
   });
 };
 
+/**
+ * router.put
+ *
+ */
 Agent.Router.prototype.put = function(route, options) {
   var agent = this.agent,
       server = agent.server(),
       router = this,
       segment = false,
       plural, singular, bits;
+
+  if (typeof options === 'function') {
+    server.put(route, function(request) {
+      var response = options.call(this, request);
+      agent.log('request: PUT ' + request.url + '  response: ' + response[0]);
+      return response;
+    });
+  }
 
   options = options || {};
   plural = options.plural;
@@ -3534,7 +3582,7 @@ Agent.Router.prototype.put = function(route, options) {
         body = {},
         id = false,
         params = {},
-        data;
+        data, responseKey;
     if (segment) {
       id = request.params[segment];
     }
@@ -3544,25 +3592,41 @@ Agent.Router.prototype.put = function(route, options) {
     }
     params = params[singular];
     if (!params) {
-      params = params[pluarl];
+      params = params[plural];
+      responseKey = plural;
+    } else {
+      responseKey = singular;
     }
     data = agent.getRecord(plural, id);
     if (!data) {
       code = 404;
     }
     if (data && id && params) {
-      body[singular] = agent.updateRecord(plural, id, params);
+      body[responseKey] = agent.updateRecord(plural, id, params);
     }
+    agent.log('request: PUT ' + request.url + '  response: ' + code);
     return [code, headers, JSON.stringify(body)];
   });
 };
 
+/**
+ * router.delete
+ *
+ */
 Agent.Router.prototype['delete'] = function(route, key) {
   var agent = this.agent,
       server = agent.server(),
       router = this,
       segment = false,
       bits;
+
+  if (typeof options === 'function') {
+    server.delete(route, function(request) {
+      var response = options.call(this, request);
+      agent.log('request: DELETE ' + request.url + '  response: ' + response[0]);
+      return response;
+    });
+  }
 
   bits = this._parseKey(key, route);
   key = bits[0];
@@ -3582,10 +3646,15 @@ Agent.Router.prototype['delete'] = function(route, key) {
     } else {
       agent.deleteRecord(key, id);
     }
+    agent.log('request: DELETE ' + request.url + '  response: ' + code);
     return [code, headers, '{}'];
   });
 };
 
+/**
+ * router.resource
+ *
+ */
 Agent.Router.prototype.resource = function(key, options) {
   var only, router, routes, plural, singular;
   router = this;
