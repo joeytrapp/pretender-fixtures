@@ -3493,7 +3493,7 @@ Agent.Router.prototype.post = function(route, options) {
   if (typeof options === 'function') {
     server.post(route, function(request) {
       var response = options.call(this, request);
-      agent.log('request: POST ' + request.url + '  response: ' + response[0]);
+      agent.log('request: POST ' + request.url + '  response: ' + response[0] + '  data: ' + request.requestBody);
       return response;
     });
     return;
@@ -3543,7 +3543,7 @@ Agent.Router.prototype.post = function(route, options) {
       body[responseKey] = agent.createRecord(plural, params);
       code = 201;
     }
-    agent.log('request: POST ' + request.url + '  response: ' + code);
+    agent.log('request: POST ' + request.url + '  response: ' + code + '  data: ' + request.requestBody);
     return [code, headers, JSON.stringify(body)];
   });
 };
@@ -3562,7 +3562,7 @@ Agent.Router.prototype.put = function(route, options) {
   if (typeof options === 'function') {
     server.put(route, function(request) {
       var response = options.call(this, request);
-      agent.log('request: PUT ' + request.url + '  response: ' + response[0]);
+      agent.log('request: PUT ' + request.url + '  response: ' + response[0] + '  data: ' + request.requestBody);
       return response;
     });
     return;
@@ -3607,7 +3607,7 @@ Agent.Router.prototype.put = function(route, options) {
     if (data && id && params) {
       body[responseKey] = agent.updateRecord(plural, id, params);
     }
-    agent.log('request: PUT ' + request.url + '  response: ' + code);
+    agent.log('request: PUT ' + request.url + '  response: ' + code + '  data: ' + request.requestBody);
     return [code, headers, JSON.stringify(body)];
   });
 };
