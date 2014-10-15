@@ -3085,6 +3085,7 @@ Agent.prototype.setIds = function(key, list) {
     obj[i + 1] = list[i];
   }
   this.fixtureIds[key] = obj;
+  return this.fixtureIds[key];
 };
 
 Agent.prototype.getIds = function(key) {
