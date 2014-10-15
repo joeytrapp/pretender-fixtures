@@ -23,6 +23,12 @@
     deepEqual(builtIds, agent.getIds('test'), 'getIds did not return the same as the makeIds response');
   });
 
+  test('setIds places user supplied keys into fixture ids cache', function() {
+    expect(1);
+    var builtIds = agent.setIds('test', [4, 5, 6]);
+    deepEqual(buildIds, { 1: 4, 2: 5, 3: 6 }, 'setIds did not add the supplied ids properly');
+  });
+
   test('group builds a new Agent.Group', function() {
     expect(2);
     equal(agent.groups.length, 0, 'A group existed before it should');
