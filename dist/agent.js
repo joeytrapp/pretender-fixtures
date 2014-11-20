@@ -3529,7 +3529,7 @@ Agent.Router.prototype.post = function(route, options) {
         data = agent.get(plural),
         id = false,
         params = {},
-        responseKey;
+        hasSingular, responseKey;
     if (segment) {
       id = request.params[segment];
     }
@@ -3537,12 +3537,13 @@ Agent.Router.prototype.post = function(route, options) {
     if (!params || (!params[singular] && !params[plural])) {
       code = 400;
     }
-    params = params[singular];
-    if (!params) {
+    hasSingular = params[singular];
+    if (hasSingular) {
+      params = params[singular];
+      responseKey = singular;
+    } else {
       params = params[plural];
       responseKey = plural;
-    } else {
-      responseKey = singular;
     }
     if (data && id) {
       if (agent.getRecord(plural, id)) {
@@ -3597,7 +3598,7 @@ Agent.Router.prototype.put = function(route, options) {
         body = {},
         id = false,
         params = {},
-        data, responseKey;
+        data, hasSingular, responseKey;
     if (segment) {
       id = request.params[segment];
     }
@@ -3605,12 +3606,13 @@ Agent.Router.prototype.put = function(route, options) {
     if (!params || (!params[singular] && !params[plural])) {
       code = 400;
     }
-    params = params[singular];
-    if (!params) {
+    hasSingular = params[singular];
+    if (hasSingular) {
+      params = params[singular];
+      responseKey = singular;
+    } else {
       params = params[plural];
       responseKey = plural;
-    } else {
-      responseKey = singular;
     }
     data = agent.getRecord(plural, id);
     if (!data) {

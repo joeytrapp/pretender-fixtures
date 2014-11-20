@@ -25,7 +25,7 @@
 
   test('setIds places user supplied keys into fixture ids cache', function() {
     expect(1);
-    var builtIds = agent.setIds('test', [4, 5, 6]);
+    var buildIds = agent.setIds('test', [4, 5, 6]);
     deepEqual(buildIds, { 1: 4, 2: 5, 3: 6 }, 'setIds did not add the supplied ids properly');
   });
 
